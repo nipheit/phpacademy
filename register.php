@@ -1,41 +1,42 @@
 <?php
 require_once 'core/init.php';
 
-var_dump(Token::check(Input::get('token')));
-
 if (Input::exists()) {
-  $validate = new Validate();
-  $validation = $validate->check($_POST, array(
-    'username' => array(
-      'required' => TRUE,
-      'min' => 2,
-      'max' => 20,
-      'unique' => 'users'
-    ),
-    'password' => array(
-      'required' => TRUE,
-      'min' => 6
-    ),
-    'password_again' => array(
-      'required' => TRUE,
-      'matches' => 'password'
-    ),
-    'name' => array(
-      'required' => TRUE,
-      'min' => 2,
-      'max' => 50
-    )
-  ));
+  if (Token::check(Input::get('token'))) {
+    $validate = new Validate();
+    $validation = $validate -> check($_POST, array(
+      'username' => array(
+        'required' => TRUE,
+        'min' => 2,
+        'max' => 20,
+        'unique' => 'users'
+      ),
+      'password' => array(
+        'required' => TRUE,
+        'min' => 6
+      ),
+      'password_again' => array(
+        'required' => TRUE,
+        'matches' => 'password'
+      ),
+      'name' => array(
+        'required' => TRUE,
+        'min' => 2,
+        'max' => 50
+      )
+    ));
 
-  if ($validation->passed()) {
-    echo 'Passed';
-  } else {
-    foreach ($validation->errors() as $error) {
-      echo $error . '<br />';
+    if ($validation -> passed()) {
+      Session::flash('success', 'You registered successfull!');
+      header('Location: index.php');
+    } else {
+      print_r($validation->errors());
+      foreach ($validation->errors() as $error) {
+        echo $error . '<br />';
+      }
     }
   }
 }
-
 ?>
 <form action="" method="post">
   <div class="field">
